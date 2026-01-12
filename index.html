@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Skchy | Handmade Clothes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Razorpay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #fffaf4;
+}
+header {
+    background: #8b5e3c;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+nav a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+section {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+    gap: 20px;
+}
+.card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0,0,0,.1);
+    padding: 15px;
+    text-align: center;
+}
+.card img {
+    width: 100%;
+    border-radius: 12px;
+}
+.price {
+    color: #8b5e3c;
+    font-size: 18px;
+    font-weight: bold;
+}
+button {
+    background: #8b5e3c;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+button:hover {
+    background: #70492e;
+}
+
+/* CART */
+#cartBtn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #000;
+}
+#cart {
+    position: fixed;
+    top: 0;
+    right: -350px;
+    width: 320px;
+    height: 100%;
+    background: white;
+    box-shadow: -4px 0 12px rgba(0,0,0,.3);
+    padding: 20px;
+    transition: 0.3s;
+    z-index: 1000;
+}
+.cart-item {
+    border-bottom: 1px solid #ddd;
+    padding: 6px 0;
+}
+footer {
+    background: #000;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Skchy</h1>
+    <p>Premium Handmade Clothing</p>
+    <nav>
+        <a href="#shop">Shop</a>
+        <a href="#contact">Contact</a>
+    </nav>
+</header>
+
+<button id="cartBtn" onclick="toggleCart()">🛒 Cart</button>
+
+<div id="cart">
+    <h3>Your Cart</h3>
+    <div id="cartItems"></div>
+    <h4>Total: ₹<span id="total">0</span></h4>
+
+    <button onclick="payRazorpay()">Pay via UPI / Card</button><br><br>
+    <button onclick="cashOnDelivery()">Cash on Delivery</button>
+</div>
+
+<section id="shop">
+<h2 style="text-align:center">Handmade Collection</h2>
+
+<div class="products">
+    <div class="card">
+        <img src="https://via.placeholder.com/300x350">
+        <h3>Handmade Cotton Dress</h3>
+        <p class="price">₹1,899</p>
+        <button onclick="addToCart('Cotton Dress',1899)">Add to Cart</button>
+    </div>
+
+    <div class="card">
+        <img src="https://via.placeholder.com/300x350">
+        <h3>Handcrafted Kurti</h3>
+        <p class="price">₹1,499</p>
+        <button onclick="addToCart('Kurti',1499)">Add to Cart</button>
+    </div>
+
+    <div class="card">
+        <img src="https://via.placeholder.com/300x350">
+        <h3>Boho Handmade Top</h3>
+        <p class="price">₹1,199</p>
+        <button onclick="addToCart('Boho Top',1199)">Add to Cart</button>
+    </div>
+</div>
+</section>
+
+<section id="contact">
+<h2 style="text-align:center">Contact Skchy</h2>
+<p style="text-align:center">
+📱 WhatsApp Orders: <b>1234567890</b><br>
+📍 Handmade in India 🇮🇳
+</p>
+</section>
+
+<footer>
+© 2026 Skchy | Handmade With Love
+</footer>
+
+<script>
+let cart = [];
+let total = 0;
+
+function addToCart(name, price) {
+    cart.push({name, price});
+    total += price;
+    updateCart();
+}
+
+function updateCart() {
+    let cartItems = document.getElementById("cartItems");
+    cartItems.innerHTML = "";
+    cart.forEach(item => {
+        cartItems.innerHTML += `<div class="cart-item">${item.name} - ₹${item.price}</div>`;
+    });
+    document.getElementById("total").innerText = total;
+}
+
+function toggleCart() {
+    let c = document.getElementById("cart");
+    c.style.right = c.style.right === "0px" ? "-350px" : "0px";
+}
+
+/* RAZORPAY */
+function payRazorpay() {
+    if (total === 0) return alert("Cart is empty");
+
+    var options = {
+        "key": "RAZORPAY_KEY_ID",  // <-- replace with real key
+        "amount": total * 100,
+        "currency": "INR",
+        "name": "Skchy",
+        "description": "Handmade Clothing",
+        "handler": function (response){
+            alert("Payment Successful!");
+        },
+        "theme": {
+            "color": "#8b5e3c"
+        }
+    };
+    var rzp = new Razorpay(options);
+    rzp.open();
+}
+
+/* CASH ON DELIVERY */
+function cashOnDelivery() {
+    if (total === 0) return alert("Cart is empty");
+
+    let msg = "COD Order from Skchy:%0A";
+    cart.forEach(i => msg += `${i.name} - ₹${i.price}%0A`);
+    msg += `Total: ₹${total}`;
+
+    window.open("https://wa.me/916002549407?text=" + msg, "_blank");
+}
+</script>
+
+</body>
+</html>
