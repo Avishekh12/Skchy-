@@ -213,7 +213,20 @@ function cashOnDelivery() {
 
     window.open("https://wa.me/916002549407?text=" + msg, "_blank");
 }
-</script>
+<script>
+let savedProducts = JSON.parse(localStorage.getItem("products") || "[]");
+let productsDiv = document.querySelector(".products");
 
+savedProducts.forEach(p => {
+    productsDiv.innerHTML += `
+    <div class="card">
+        <img src="${p.img}">
+        <h3>${p.name}</h3>
+        <p class="price">₹${p.price}</p>
+        <button onclick="addToCart('${p.name}',${p.price})">Add to Cart</button>
+    </div>`;
+});
+</script>
+    
 </body>
 </html>
