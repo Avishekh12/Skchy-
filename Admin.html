@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Skchy Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+    font-family: Arial;
+    background: #f4f4f4;
+    padding: 20px;
+}
+.login, .panel {
+    max-width: 400px;
+    background: white;
+    padding: 20px;
+    margin: auto;
+    border-radius: 10px;
+}
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+}
+button {
+    background: #8b5e3c;
+    color: white;
+    border: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login" id="login">
+    <h2>Admin Login</h2>
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+</div>
+
+<div class="panel" id="panel" style="display:none">
+    <h2>Add Product</h2>
+    <input id="pname" placeholder="Product Name">
+    <input id="pprice" placeholder="Price">
+    <input id="pimg" placeholder="Image URL">
+    <button onclick="addProduct()">Add Product</button>
+</div>
+
+<script>
+function login() {
+    if (user.value === "Himanshuadmin" && pass.value === "skchy@123") {
+        login.style.display = "none";
+        panel.style.display = "block";
+    } else {
+        alert("Wrong login");
+    }
+}
+
+function addProduct() {
+    let products = JSON.parse(localStorage.getItem("products") || "[]");
+    products.push({
+        name: pname.value,
+        price: pprice.value,
+        img: pimg.value
+    });
+    localStorage.setItem("products", JSON.stringify(products));
+    alert("Product added!");
+}
+</script>
+
+</body>
+</html>
